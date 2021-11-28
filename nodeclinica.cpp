@@ -2,7 +2,7 @@
 using namespace std;
 class Node{
 private:
-	int data;
+	string data;
 	string g;
 	string h;
 	int en;
@@ -16,34 +16,36 @@ public:
 	
 	 LinkedList();
 	 ~LinkedList();
-	 int getFront() const;
-	 int getback()  const;
-	 void addFront(int dt,string g,string h,int en);
-	 void addBack(int dt,string g,string h,int en);
+	 string getFront() const;
+	 string getback()  const;
+	 void addFront(string dt,string g,string h,int en);
+	 void addBack(string dt,string g,string h,int en);
 	 void removefront();
-	 void removeback(int f);
-	 void getval(int f);
+	 void removeback(string f);
+	 void getval(string f);
 	 void printreverse();
-	 void printfoward();	 
+	 void printfoward();
+	 void head();	 
 private:
 Node *header;
 Node *trailer;
 };
 int main(){
-	int his;
+	string his;
 	string s="s";
 	string aca="s";
-	int foward;
-	int busqueda;
+	string foward;
+	string busqueda;
+	
 	string nombre;
 	string fechau;
 	int enfermedad;
 	LinkedList historia;
 	int acabar=0;
-	historia.addBack(1,"Maria Lopez","12/14/2028",5);
-	historia.addBack(2,"Juan Lopez","12/14/2028",6);
-	historia.addBack(3,"Ricardo Mendez","12/14/2028",7);
-		historia.addBack(4,"Maria Lopez","12/14/2028",6);
+	historia.addBack("Ah1","Maria Lopez","12/14/2028",5);
+	historia.addBack("Ah2","Juan Lopez","12/14/2028",6);
+	historia.addBack("Ah4","Ricardo Mendez","12/14/2028",7);
+		historia.addBack("Ah5","Maria Lopez","12/14/2028",6);
 	
 	do{
 	int op;
@@ -64,20 +66,27 @@ int main(){
 			cout<<"Ingrese la ultima visita \n";
 			cin>>fechau;
 			cout<<"Ingrese la ultima enfermedad \n";
-			cin>>enfermedad;
+			try{
+				cin>>enfermedad;
+			}
+			catch(const std::exception& e){
+				cout<<"solos e permiten numeros";
+			}
+			
 			while (enfermedad < 0 || enfermedad > 9) {
 			   cout<<"Ingrese la ultima enfermedad \n";
 			   cin>>enfermedad;
+			   
 			}
 			cout<<"Ingrese la 0 si desea ingresar arriba o otra tecla para abajo \n";
 			cin>>foward;
-			if (foward==0){
+			if (foward=="0"){
 				historia.addBack(his,nombre,fechau,enfermedad);
-				historia.printreverse();
+				historia.printfoward();
 			}
 			else{
 			  historia.addFront(his,nombre,fechau,enfermedad);
-			  historia.printreverse();
+			  historia.printfoward();
 			}
 			
 		 break;
@@ -90,17 +99,21 @@ int main(){
 		
 		break;
 		case 3:
-			historia.printreverse();
+			historia.head();
+			cout<<"\n";
+			historia.printfoward();
 		break;
 		case 4:
 		    cout<<"Ingresa el valor a buscar \n";
 			cin>>busqueda;
+				historia.head();
 			historia.getval(busqueda);
 				
 		break;
 		default:
 			break;
 	} 
+	cout<<"\n";
 	cout<<"ingrese 1 para acabar";
 	cin>>acabar;
 }while(acabar != 1);
@@ -117,13 +130,13 @@ int main(){
  	
  }
  
- int LinkedList::getFront() const{
+ string LinkedList::getFront() const{
  return header->next->data;
  }
- int LinkedList::getback() const{
+ string LinkedList::getback() const{
  return trailer->prev->data;
  }
- void LinkedList::addFront(int dt,string g,string h,int n){
+ void LinkedList::addFront(string dt,string g,string h,int n){
  	Node *nd=new Node;
  	nd->data=dt;
  	nd->g=g;
@@ -135,7 +148,7 @@ int main(){
  	header->next=nd;
  	
  }
-  void LinkedList::addBack(int dt,string g,string h,int n){
+  void LinkedList::addBack(string dt,string g,string h,int n){
  	Node *nd=new Node;
  	nd->data=dt;
  	nd->h=h;
@@ -153,33 +166,58 @@ int main(){
  	header->next=nd;
  	nd->prev=header;
  }
-  void LinkedList::removeback(int f){
+ void LinkedList::head(){
+ 		cout <<"Historial ";
+ 		cout <<" Nombre ";
+ 		cout <<" Ultima visita ";
+ 		cout <<" enfermedad ";
+ 		cout << "\n";
+ 		cout << "-------------------------";
+ }
+  void LinkedList::removeback(string f){
+   Node *aux1, *aux2;
+    int count = 0;
+   
+    if( header == NULL ) {
+        cout << "Lista vacia" << endl;
+    } else {
+        aux1 = header;
+       
+        while( aux1 != NULL ) {
+            if( f == aux1 -> data ) {
+                count++;
  
- Node *nd=trailer->prev;
+                if(aux1 == header){
  
- 	while(nd != header){
- 	   if (f==nd->data){
- 		Node *na=nd->prev->prev;
- 		if (na==NULL){	
-         	delete header;
-		 break;
-		 }
-		
-		delete nd -> prev;
- 	    nd->prev=na;
- 	    nd->next=nd;
- 	    
- 		break;
-		}
-		else{
+                      header = aux1->next;
+                      delete aux1;
+                }
+                 else if(aux1  == trailer){
+ 
+                      trailer = aux2;
+                      delete aux1;
+                 }
+                 else{
+                 
+                      aux2->next = aux1->next;
+                      delete aux1;
+                 }
+             break;
+            } 
 			
-		}
-	nd=nd->prev;	
- 	}
- 	
- 
- 	
+			else {
+                aux2 = aux1;
+                aux1 = aux1 -> next;
+            }
+            
+        }
+    }
+     if( count == 0 ) {
+        cout << "\nNumero no encontrado" << endl;
+    }
 }
+ 	
+
 
  void LinkedList::printreverse(){
  	Node *nd=trailer->prev;
@@ -196,33 +234,38 @@ int main(){
  }
  
   void LinkedList::printfoward(){
- Node *nd=trailer->prev;
- 	while(nd != header){
- 		cout << nd->data << " ";
- 		cout << nd->g << " ";
- 		cout << nd->h << " ";
- 		cout << nd->en << " ";
- 		cout << "\n";
- 		nd=nd->next;
+ Node *nd=header->next;
+ 	while(nd != trailer){
+ 		cout << nd->data<<"    ";
+ 		cout << nd->g << "    ";
+ 		cout << nd->h << "    ";
+ 		cout << nd->en <<"   ";
+ 		cout << "\n";		
+		nd=nd->next;
+	   
 	 }
  	
  }
-  void LinkedList::getval(int f){
- Node *nd=trailer->prev;
- 	while(nd != header){
+  void LinkedList::getval(string f){
+ Node *nd=header->next;
+ int count=0;
+ 	while(nd != trailer){
  	   if (f==nd->data){
  	   	cout << nd->data << " ";
  		cout << nd->g << " ";
  		cout << nd->h << " ";
  		cout << nd->en << " ";
- 		
+ 		count++;
  		break;
 		}
 		else{
 			
 		}
-	nd=nd->prev;	
+	nd=nd->next;	
  	}
+ 	if (count==0){
+	 cout<<"No encontrado";
+	 }
 	 }
 LinkedList::~LinkedList(){
 	while(header->next!=trailer)
